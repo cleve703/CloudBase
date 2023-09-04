@@ -37,18 +37,22 @@ public class CloudBase {
   
   public int calculateCloudBase() {
     double formulaDivisor = 1;
+    // Select correct divisor depending on unit of measure
     if(this.unitOfMeasure == "Celsius") {
       formulaDivisor = 4.4;  
     } else if(this.unitOfMeasure == "Fahrenheit") {
       formulaDivisor = 2.5;
     }
+    // Put numbers into formula and calculate cloud base altitude as integer
     int result = (int) Math.round(1000 * (temperature - dewPoint) / formulaDivisor);
+    // It makes no sense that clouds would be below ground level, so negative values become zero
     if(result < 0) {
       result = 0;
     }
     return result;
   }
 
+  // Return data in CSV format for convenient addition to log file
   public String toCSV() {
     return timeStamp + "," + cloudBaseAltitude + "," + temperature + "," + dewPoint + "," + unitOfMeasure;
   }
