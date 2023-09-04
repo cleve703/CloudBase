@@ -1,43 +1,56 @@
-import java.util.Scanner;
+import java.time.LocalDateTime;
 
 public class CloudBase {
-  public static void main(String[] args) {
-    Scanner input = new Scanner(System.in);
-    String unitOfMeasure = "None chosen";
-    double formulaDivisor = 1;
-    while(unitOfMeasure == "None chosen") {
-      System.out.print("\033[H\033[2J");
-      System.out.flush();
-      System.out.println("Welcome to Cloud Base Calculator\n");
-      System.out.println("Select your unit of measure:\n1) Celsius\n2) Fahrenheit\n3) Quit\n");
-      int choice = input.nextInt();
-      if(choice == 1) {
-        unitOfMeasure = "Celsius";
-        formulaDivisor = 4.4;
-      } 
-      else if(choice == 2) {
-        unitOfMeasure = "Fahrenheit";
-        formulaDivisor = 2.5;
-      }
-      else if(choice == 3) {
-        break;
-      }
-      System.out.println("\nUnit of measure is now set to: " + unitOfMeasure + ".\n");
-    }
-    int temperature = 999;
-    while(temperature == 999) {
-      System.out.println("Enter the temperature in degrees " + unitOfMeasure + ":\n");
-      temperature = input.nextInt();
-    }
-    int dewPoint = 999;
-    while(dewPoint == 999) {
-      System.out.println("\nEnter the dew point in degrees " + unitOfMeasure + ":\n");
-      dewPoint = input.nextInt();
-    }
-    int cloudBaseAltitude = (int) Math.round(1000 * (temperature - dewPoint) / formulaDivisor);
-    if(cloudBaseAltitude < 0){
-      cloudBaseAltitude = 0;
-    }
-    System.out.println("\nEstimated cloud base altitude is " + cloudBaseAltitude + " feet above ground level.\n");
+  private int temperature;
+  private int dewPoint;
+  private String unitOfMeasure;
+  private LocalDateTime timeStamp;
+  private int cloudBaseAltitude;
+
+  public CloudBase(int temperature, int dewPoint, String unitOfMeasure) {
+    this.temperature = temperature;
+    this.dewPoint = dewPoint;
+    this.unitOfMeasure = unitOfMeasure;
+    this.timeStamp = LocalDateTime.now();
+    this.cloudBaseAltitude = calculateCloudBase();
   }
+
+  public int getTemperature() {
+    return temperature;
+  }
+
+  public int getDewPoint() {
+    return dewPoint;
+  }
+
+  public String getUnitOfMeasure() {
+    return unitOfMeasure;
+  }
+
+  public LocalDateTime getTimeStamp() {
+    return timeStamp;
+  }
+
+  public int getCloudBaseAltitude() {
+    return cloudBaseAltitude;
+  }
+  
+  public int calculateCloudBase() {
+    double formulaDivisor = 1;
+    if(this.unitOfMeasure == "Celsius") {
+      formulaDivisor = 4.4;  
+    } else if(this.unitOfMeasure == "Fahrenheit") {
+      formulaDivisor = 2.5;
+    }
+    int result = (int) Math.round(1000 * (temperature - dewPoint) / formulaDivisor);
+    if(result < 0) {
+      result = 0;
+    }
+    return result;
+  }
+
+  public String toCSV() {
+    return timeStamp + "," + cloudBaseAltitude + "," + temperature + "," + dewPoint + "," + unitOfMeasure;
+  }
+
 }
